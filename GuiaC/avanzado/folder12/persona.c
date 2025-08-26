@@ -15,11 +15,11 @@ struct persona_t* crearPersona(char *nombre, uint16_t edad) {
         // Manejar el error de asignaci´on de memoria
         return NULL;
     }
-
-    struct persona_t persona = *arr;
-    persona.edad = edad;
-    persona.nombre = nombre;
-    printf("Persona edad %d\n", persona.edad);
+    arr->edad = edad;
+    arr->nombre = nombre;     
+    //struct persona_t persona = *arr;
+    //persona.edad = edad;
+    //persona.nombre = nombre;
     //strcpy(persona.nombre, nombre);
 
     return arr;
