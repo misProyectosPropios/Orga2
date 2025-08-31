@@ -1,0 +1,1 @@
+Realizar un programa que imprima por pantalla todos los tamaños de los tipos de datos (con sus modificadores) vistos hasta el momento. Mirar atentamente la tabla de especificadores de conversión y los length modifiers para saber cómo imprimir los distintos tipos de datos. Traten de fixear todos los warnings que les tire el compilador
