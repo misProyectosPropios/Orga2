@@ -1,0 +1,1 @@
+Compilar y ejecutar el programa del mensaje secreto. ¿Qué mensaje se imprime? ¿Por qué les parece que length se calcula de esa manera? ¿Qué pasaría si el mensaje secreto tuviera un tamaño distinto? ¿Por qué se usa size t para calcular el tamañoo del mensaje secreto? Ver https://en.cppreference.com/w/c/types/size_t para m´as información.
