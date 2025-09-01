@@ -1,7 +1,3 @@
-¿Qué imprime el programa en su versión con el keyword static? ¿Qué pasa si se quita
-la palabra clave static en la función alcoholizar?
-
-```c
 #include <stdio.h>
 
 #define FELIZ 0
@@ -15,9 +11,9 @@ void print_estado();
 int main(){
     print_estado();                             //Imprime Estoy triste
     alcoholizar();                              // cantidad = 1
-    print_estado();                             //Imprime Estoy triste   
+    print_estado();                             //Imprime Estoy feliz   
     alcoholizar();alcoholizar();alcoholizar();  // cantidad = 1 + 1 + 1 + 1 = 4
-    print_estado(); // que imprime?             //Imprime Estoy feliz
+    print_estado(); // que imprime?             //Imprime Estoy triste
 
     //El static hace una forma de preservación de la variable en una función, a pesar de no estar más en el scope de la función
 }
@@ -34,4 +30,3 @@ void alcoholizar(){
 void print_estado(){
     printf("Estoy %s\n", estado == FELIZ ? "feliz" : "triste");
 }
-```
