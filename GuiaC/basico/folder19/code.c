@@ -1,7 +1,3 @@
-Analizar el siguiente programa. ¿Qué imprime? Compilarlo y ejecutarlo para verificar el
-resultado.
-
-```c
 #include <stdio.h>
 int g = 10;
 
@@ -43,4 +39,3 @@ int main() {
 
   
 }
-```
