@@ -2,17 +2,17 @@ El siguiente esquema de programa muestra solo definiciones de funciones y de var
 Indicar el scope y duración de cada variable.
 
 
-'''c
-int b, c;
+```c
+int b, c; //variables globales
 void f(void)
 {
-  int b, d;
+  int b, d; //Variables locales
 }
 
-void g(int a)
+void g(int a) { //Variable local
+  int c;        //Variable local
   {
-  int c;
-  {
-  int a, d;
+  int a, d;     //Variable sub locales
   }
 }
+```
