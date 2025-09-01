@@ -1,0 +1,1 @@
+Lo que pasa es que genera un espacio de memoria para un array de ese tamaño, como lo indica la función, pero el problema es que nunca le dejamos asignarlo al array ese, al no tener la dirección de la variable
