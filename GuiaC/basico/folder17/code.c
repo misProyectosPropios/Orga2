@@ -1,6 +1,3 @@
-¿Qué imprime el programa en su versión modificada?
-
-```c
 #include <stdio.h>
 //Constantes
 #define FELIZ 0
@@ -27,4 +24,3 @@ void print_estado(){
     //Primero imprime 'Estoy triste'
     //Luego, imprimire Estoy feliz
 }
-```
