@@ -1,6 +1,3 @@
-Reemplazar el ciclo while del snippet anterior por un ciclo for.
-
-```c
 #include <stdio.h>
     
 int main() {
@@ -9,5 +6,3 @@ int main() {
         printf("i = %d\n",i); // imprime o no el 0?
     }
 }
-
-```
