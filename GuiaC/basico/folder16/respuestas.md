@@ -5,9 +5,10 @@ la duración de cada variable.
 
 #include <stdio.h>
 #define FELIZ 0
-#define TRISTE 1 
+#define TRISTE 1 //Genera constantes globales que se llaman feliz y triste
 
-void ser_feliz(int estado);
+//Creación de firmas de funciones
+void ser_feliz(int estado); 
 void print_estado(int estado);
 
 int main(){
@@ -17,10 +18,10 @@ int main(){
 }
 
 void ser_feliz(int estado){
-    estado = FELIZ;
+    estado = FELIZ; //Asigna a la variable estado local como feliz
 }
 
 void print_estado(int estado){
-    printf("Estoy %s\n", estado == FELIZ ? "feliz" : "triste");
+    printf("Estoy %s\n", estado == FELIZ ? "feliz" : "triste"); //Imprimmi estoy triste
 }
 ```
