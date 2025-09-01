@@ -12,16 +12,15 @@ struct persona_t* crearPersona(char *nombre, uint16_t edad) {
 
     struct persona_t* arr = malloc(sizeof(struct persona_t));
     if (arr == NULL) {
-        // Manejar el error de asignaci´on de memoria
         return NULL;
     }
     arr->edad = edad;
-    arr->nombre = nombre;     
-    //struct persona_t persona = *arr;
-    //persona.edad = edad;
-    //persona.nombre = nombre;
-    //strcpy(persona.nombre, nombre);
-
+    arr->nombre = malloc(strlen(nombre) + 1); 
+    if (!arr->nombre) {
+        free(arr);
+        return NULL;
+    }
+    strcpy(arr->nombre, nombre);
     return arr;
 }
 
