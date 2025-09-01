@@ -1,4 +1,4 @@
-Analicen el còdigo anterior y respondan las siguientes preguntas:
+Analicen el código anterior y respondan las siguientes preguntas:
 ¿Qué hace ca(\*p)[VIDEO COLS] = (ca(\*)[VIDEO COLS])VIDEO;?
 Siendo p el puntero declarado ¿Por qué funciona esto: p[f][c].c = ’ ’;? 
 Explicar detalladamente el proceso de desreferenciación.
