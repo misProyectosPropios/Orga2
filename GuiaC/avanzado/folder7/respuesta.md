@@ -1,0 +1,1 @@
+No, no podriamos intercambiar los valores de x e y, pues no tendriamos información de donde están localizadas justo esas variables
