@@ -24,8 +24,8 @@ section .rodata
 global ej_asm
 ej_asm:
   .posiciones_hecho: db FALSE
-  .tamanios_hecho:   db TRUE 
-  .colores_hecho:    db FALSE
+  .tamanios_hecho:   db FALSE
+  .colores_hecho:    db TRUE
   .orbitar_hecho:    db FALSE
   ALIGN 8
   .posiciones: dq ej_posiciones_asm
@@ -168,7 +168,7 @@ ej_colores_asm:
 	; xmm0 = r g b a ; r g b a ; r g b a ; r g b a 
 	mov rcx, [rdi + PARTICLES_COUNT_OFFSET]
 	xor r9, r9
-	MOV R8, [RCX + PARTICLES_COLOR_OFFSET]
+	MOV R8, [RDI + PARTICLES_COLOR_OFFSET]
 	MOVQ XMM0, RSI
 	PSHUFD XMM0, XMM0, 0b00_00_00_00
 	; SHUFFLE xmm0 = xmm0 low half ; xmm0 low half
@@ -179,7 +179,8 @@ ej_colores_asm:
 		; Obtener los registros
 		; xmm1 = color[i + 3] ; color[i + 2] ; color[i + 1] ; color[i] 
 		MOVUPS XMM1, [R8]
-        PSUBSB XMM1, XMM0 
+        PSUBUSB XMM1, XMM0
+		MOVUPS [R8], XMM1
 
 		; Guardo el valor
 		
