@@ -23,8 +23,8 @@ section .rodata
 ; TP.
 global ej_asm
 ej_asm:
-  .posiciones_hecho: db FALSE
-  .tamanios_hecho:   db FALSE
+  .posiciones_hecho: db TRUE
+  .tamanios_hecho:   db TRUE
   .colores_hecho:    db TRUE
   .orbitar_hecho:    db FALSE
   ALIGN 8
@@ -54,18 +54,42 @@ section .text
 ;
 ; void ej_posiciones(emitter_t* emitter, vec2_t* gravedad);
 ej_posiciones_asm:
-	mov rcx, [rdi + PARTICLES_COUNT_OFFSET]
-	mov rdx, [rdi + PARTICLES_POS_OFFSET]
-	mov r8,  [rdi + PARTICLES_VEL_OFFSET]
+	; RDI = emitter
+	; RSI = gravedad
+	mov RCX, [RDI + PARTICLES_COUNT_OFFSET]
+	mov RDX, [RDI + PARTICLES_POS_OFFSET]
+	mov R8,  [RDI + PARTICLES_VEL_OFFSET]
 
-	xor r9, r9
+	MOVUPS XMM2, [RSI]
+	PSHUFD XMM2, XMM2, 0x44
+
+	xor R9, R9
+	xor R10, R10
+
 	jmp .check
+	; PATO R9. Debería ser la mitad del count (suponemos que es par)
+	; Variables
+	; R9 = i
+	; RCX = count 
+	; RDX = positions
+	; R8 = velocities
+	; R10 = offset 
 
 	.loop:
         ; Cuerpo del loop
-		add r9, 0 ; ¿Cantidad de partículas por loop?
+		
+		; xmmo = position[0].x, position[0].y, positions[i + 1].x, position[i + 1].y
+		; xmm1 = velocities[0].x, velocities[0].y, velocities[i + 1].x, velocities[i + 1].y
+		MOVUPS XMM0, [RDX + R10]
+		MOVUPS XMM1, [R8 + R10] 
+		ADDPS XMM0, XMM1
+		ADDPS XMM1, XMM2
+		MOVUPS [RDX + R10], XMM0
+		MOVUPS [R8 + R10], XMM1 
+		add R10, 16
+		add R9, 2 ; ¿Cantidad de partículas por loop? (al menos 2)
 	.check:
-		cmp r9, rcx
+		cmp R9, RCX
 		jb .loop
 	ret
 
@@ -83,59 +107,48 @@ ej_posiciones_asm:
 ; void ej_tamanios(emitter_t* emitter, float a, float b, float c);
 ej_tamanios_asm:
 	; RDI = emitter
-	; R8 
-	
-	mov rcx, [rdi + PARTICLES_COUNT_OFFSET]
-	xor r9, r9
-	MOV R8, [RDI + PARTICLES_SIZE_OFFSET]
+	; XMM0 = float a, b c
+	mov RCX, [RDI + PARTICLES_COUNT_OFFSET]
+	mov R11, [RDI + PARTICLES_SIZE_OFFSET]
+	PSHUFD XMM2, XMM0, 0xaa ; c
+	PSHUFD XMM1, XMM0, 0x55 ; b
+	PSHUFD XMM0, XMM0, 0x00 ; a
+	xor R9, R9
+	xor R10, R10
 	jmp .check
-	; XMM0 = Null ; c ; b ; a
-	
-
-	; XMM1 = a
-	; XMM2 = b
-	; XMM3 = c
-
-	PSHUFD XMM2, XMM0, 0b01_01_01_01
-	PSHUFD XMM3, XMM0, 0b10_10_10_10
-	PSHUFD XMM4, XMM0, 0b00_00_00_00
-
+	; Variables
+	; RCX = count
+	; R9 = i
+	; R10 = offset
+	; R11 = particlesTam
+	; XMM0 = a
+	; XMM1 = b 
+	; XMM2 = c
+	; XMM3 = particlesTam
+	; XMM4 = particlesTam[i] * a - b;
+	; XMM5 = articlesTam[i] - b;
+	; Necesito un xmm que sea solo b y otro solo a para
+	; ahorrar calculos
 	.loop:
-        ; Cuerpo del loop
-		; XMM0 = blend
-		; XMM1 = a 
-		; XMM2 = b
-		; XMM3 = c
-		; XMM4 = particlesTam[i]
-		; XMM5 = particlesTam[i] * a - b;
-		; XMM6 = particlesTam[i] - b;
-		; XMM7 = Union de XMM3 U XMM4 basado en c <= particlesTam[i]. Usar blend 
+	
+	MOVUPS XMM3, [R11 + R10]
+	PSHUFD XMM5, XMM3, 0xD4
+	PSHUFD XMM4, XMM3, 0xD4 ; it should be the same
+	MULPS XMM4, XMM0 ; partTam[i] * a
+	SUBPS XMM4, XMM1 ; partTam[i] * a - b
+	SUBPS XMM5, XMM1 ; partTam[i] - b
 
-		MOVUPS XMM4, [R8]
-		PSHUFD XMM5, XMM4, 0b11_10_01_00
-		PSHUFD XMM6, XMM4, 0b11_10_01_00
-
-		PMULDQ XMM6, XMM1
-		PSUBD XMM6, XMM2
-
-		PSUBD XMM5, XMM2
-
-		;VPCMPD XMM0, XMM4, XMM3
-		BLENDVPS XMM7, XMM3
-		
-		; BLEND de 32 bits
+	VCMPLE_OQPS XMM6, XMM2, XMM3
+	; Mañana terminarlo
 
 
-
-		MOVUPS [R8],  XMM0
-
-		add r9, 4 ; ¿Cantidad de partículas por loop? (pues es 32)
-		add R8, 16
+	add R10, 16
+	add R9, 4  ; Each one
 	.check:
-		cmp r9, rcx
-		jb .loop
-	ret
+	cmp R9, RCX
+	jb .loop
 
+	ret
 
 ; Actualiza los colores de las partículas de acuerdo al delta de color
 ; proporcionado.
