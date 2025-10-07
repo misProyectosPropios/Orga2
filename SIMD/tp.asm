@@ -110,9 +110,9 @@ ej_tamanios_asm:
 	; XMM0 = float a, b c
 	mov RCX, [RDI + PARTICLES_COUNT_OFFSET]
 	mov R11, [RDI + PARTICLES_SIZE_OFFSET]
-	PSHUFD XMM2, XMM0, 0xaa ; c
-	PSHUFD XMM1, XMM0, 0x55 ; b
 	PSHUFD XMM0, XMM0, 0x00 ; a
+	PSHUFD XMM1, XMM1, 0x00 ; b
+	PSHUFD XMM2, XMM2, 0x00 ; c
 	xor R9, R9
 	xor R10, R10
 	jmp .check
@@ -120,27 +120,33 @@ ej_tamanios_asm:
 	; RCX = count
 	; R9 = i
 	; R10 = offset
-	; R11 = particlesTam
+	; R11 = particles_size
 	; XMM0 = a
 	; XMM1 = b 
 	; XMM2 = c
-	; XMM3 = particlesTam
-	; XMM4 = particlesTam[i] * a - b;
-	; XMM5 = articlesTam[i] - b;
+	; XMM3 = particles_size
+	; XMM4 = particles_size[i] * a - b;
+	; XMM5 = articles_size[i] - b;
+	; XMM6 = Resultado COmparacion
+	; XMM7 =  part_size[i] * a - b >= c
+	; XMM8 =  part_size[i] - b < c
 	; Necesito un xmm que sea solo b y otro solo a para
 	; ahorrar calculos
 	.loop:
 	
 	MOVUPS XMM3, [R11 + R10]
-	PSHUFD XMM5, XMM3, 0xD4
-	PSHUFD XMM4, XMM3, 0xD4 ; it should be the same
+	PSHUFD XMM5, XMM3, 0b11_10_01_00
+	PSHUFD XMM4, XMM3, 0b11_10_01_00 ; it should be the same
 	MULPS XMM4, XMM0 ; partTam[i] * a
 	SUBPS XMM4, XMM1 ; partTam[i] * a - b
 	SUBPS XMM5, XMM1 ; partTam[i] - b
 
-	VCMPLE_OQPS XMM6, XMM2, XMM3
-	; Mañana terminarlo
+	VCMPGE_OQPS XMM6, XMM3, XMM2
+	VPAND XMM7, XMM4, XMM6
+	VPANDN XMM8, XMM6, XMM5
 
+	POR XMM7, XMM8
+	MOVUPS [R11 + R10],  XMM7
 
 	add R10, 16
 	add R9, 4  ; Each one
